@@ -17,7 +17,7 @@ export default function Footer() {
         rel="noreferrer"
         className="text-primary font-semibold px-1 transition-colors duration-300 hover:text-dark"
       >
-        eazybytes
+        Devi The Dev
       </a>
     </footer>
   );
