@@ -44,10 +44,12 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
     --font-primary: "Josefin Sans";
-    --color-primary: #1D4ED8;
-    --color-dark: #1E40AF;
-    --color-lighter: #BFDBFE;
-    --color-light: #EFF6FF;
+    --color-primary: #06B6D4;
+    --color-dark: #0891B2;
+    --color-lighter: #A5F3FC;
+    --color-light: #ECFEFF;
+    --color-normalbg: #f3f4f6;
+    --color-darkbg: #1e2939;
 }
 
 :root {

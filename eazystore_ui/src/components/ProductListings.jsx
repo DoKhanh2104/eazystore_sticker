@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ProductCard from "./ProductCard";
 import { SearchBox } from "./SearchBox";
-import DropDown from "./DropDown";
+import DropDown from "./Dropdown";
 
 export default function ProductListings({ products }) {
   const myOptions = ["Popularity", "Price Low to High", "Price High to Low"];
@@ -17,32 +17,31 @@ export default function ProductListings({ products }) {
     setSelectedSort(inputSort);
   };
 
-  // Filter
-  let filteredAndSortedProducts = Array.isArray(products)
-    ? products.filter((product) =>
-        product.name.toLowerCase().includes(searchText.toLowerCase())
-      )
-    : [];
+  const filteredAndSortedProducts = useMemo(() => {
+    if (!Array.isArray(products)) {
+      return [];
+    }
 
-  // Sort
-  switch (selectedSort) {
-    case "Price Low to High":
-      filteredAndSortedProducts = filteredAndSortedProducts.sort(
-        (a, b) => parseFloat(a.price) - parseFloat(b.price)
-      );
-      break;
-    case "Price High to Low":
-      filteredAndSortedProducts = filteredAndSortedProducts.sort(
-        (a, b) => parseFloat(b.price) - parseFloat(a.price)
-      );
-      break;
-    case "Popularity":
-    default:
-      filteredAndSortedProducts = filteredAndSortedProducts.sort(
-        (a, b) => parseInt(b.popularity) - parseInt(a.popularity)
-      );
-      break;
-  }
+    // Filter
+    let filteredProducts = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    // Sort
+    return filteredProducts.slice().sort((a, b) => {
+      switch (selectedSort) {
+        case "Price Low to High":
+          return parseFloat(a.price) - parseFloat(b.price);
+        case "Price High to Low":
+          return parseFloat(b.price) - parseFloat(a.price);
+        case "Popularity":
+        default:
+          return parseInt(b.popularity) - parseInt(a.popularity);
+      }
+    });
+  }, [products, searchText, selectedSort]);
 
   return (
     <div className="max-w-[1152px] mx-auto">
@@ -67,7 +66,7 @@ export default function ProductListings({ products }) {
             <ProductCard key={product.productId} product={product} />
           ))
         ) : (
-          <p className="text-center font-primary font-bold text-lg text-primary">
+          <p className="col-span-full text-center font-primary font-bold text-lg text-primary">
             No products found
           </p>
         )}

@@ -1,17 +1,53 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingBasket, faTags } from "@fortawesome/free-solid-svg-icons";
+import {
+  faShoppingBasket,
+  faTags,
+  faMoon,
+  faSun,
+} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const navLinkClass =
-    "text-center text-lg font-primary font-semibold text-primary py-2";
+    "text-center text-lg font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
+
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") === "dark" ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const handleChangeTheme = () => {
+    setTheme((prevTheme) => {
+      const newTheme = prevTheme === "light" ? "dark" : "light";
+      localStorage.setItem("theme", newTheme);
+      return newTheme;
+    });
+  };
   return (
-    <header className="border-b border-gray-300 sticky top-0 z-20 bg-gray-100">
+    <header className="border-b border-gray-300 dark:border-gray-600 sticky top-0 z-20 bg-normalbg dark:bg-darkbg">
       <div className="flex items-center justify-between mx-auto max-w-[1152px] px-6 py-4">
         <a href="/" className={navLinkClass}>
           <FontAwesomeIcon icon={faTags} className="h-8 w-8" />
           <span className="font-bold">Eazy Stickers</span>
         </a>
         <nav className="flex items-center py-2 z-10">
+          <button
+            className="flex justify-center items-center mx-3 w-8 h-8 border rounded-full border-primary dark:border-light transition duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
+            aria-label="Toggle theme"
+            onClick={handleChangeTheme}
+          >
+            <FontAwesomeIcon
+              className="w-4 h-4 text-primary dark:text-light"
+              icon={theme === "dark" ? faMoon : faSun}
+            />
+          </button>
           <ul className="flex space-x-6">
             <li>
               <a href="/" className={navLinkClass}>
@@ -34,7 +70,7 @@ export default function Header() {
               </a>
             </li>
             <li>
-              <a href="/cart" className="text-primary py-2">
+              <a href="/cart" className="text-primary dark:text-light py-2">
                 <FontAwesomeIcon icon={faShoppingBasket} />
               </a>
             </li>
