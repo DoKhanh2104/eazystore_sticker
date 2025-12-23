@@ -49,12 +49,16 @@ export default function Header() {
               icon={theme === "dark" ? faMoon : faSun}
             />
           </button>
-          <ul className="flex space-x-6">
+          <ul className="flex space-x-4">
             <li>
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  isActive ? `underline ${navLinkClass}` : navLinkClass
+                  `text-center font-primary dark:text-light hover:text-dark dark:hover:text-lighter px-4 py-2 rounded-full transition-all duration-300 text-primary font-semibold  ${
+                    isActive
+                      ? "bg-primary text-white shadow-lg hover:text-gray-200"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                  }`
                 }
               >
                 Home
@@ -64,7 +68,11 @@ export default function Header() {
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
-                  isActive ? `underline ${navLinkClass}` : navLinkClass
+                  `text-center font-primary dark:text-light hover:text-dark dark:hover:text-lighter  px-4 py-2 rounded-full transition-all duration-300 text-primary font-semibold ${
+                    isActive
+                      ? "bg-primary text-white shadow-lg hover:text-gray-200"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                  }`
                 }
               >
                 About
@@ -74,7 +82,11 @@ export default function Header() {
               <NavLink
                 to="/contact"
                 className={({ isActive }) =>
-                  isActive ? `underline ${navLinkClass}` : navLinkClass
+                  `text-center font-primary dark:text-light hover:text-dark dark:hover:text-lighter  px-4 py-2 rounded-full transition-all duration-300 text-primary font-semibold ${
+                    isActive
+                      ? "bg-primary text-white shadow-lg hover:text-gray-200"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                  }`
                 }
               >
                 Contact
@@ -84,7 +96,11 @@ export default function Header() {
               <NavLink
                 to="/login"
                 className={({ isActive }) =>
-                  isActive ? `underline ${navLinkClass}` : navLinkClass
+                  `text-center font-primary dark:text-light hover:text-dark dark:hover:text-lighter  px-4 py-2 rounded-full transition-all duration-300 text-primary font-semibold ${
+                    isActive
+                      ? "bg-primary text-white shadow-lg hover:text-gray-200"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                  }`
                 }
               >
                 Login
