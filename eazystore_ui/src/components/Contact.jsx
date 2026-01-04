@@ -73,6 +73,11 @@ const Contact = () => {
             maxLength={32}
             type="text"
           />
+          {actionData?.errors?.name && (
+            <p className="text-red-500 mt-1 text-sm">
+              {actionData.errors.name}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -89,6 +94,11 @@ const Contact = () => {
               placeholder="Your Email"
               type="email"
             />
+            {actionData?.errors?.email && (
+              <p className="text-red-500 mt-1 text-sm">
+                {actionData.errors.email}
+              </p>
+            )}
           </div>
 
           {/* Mobile */}
@@ -106,6 +116,11 @@ const Contact = () => {
               title="Mobile number must be exactly 10 digits"
               type="tel"
             />
+            {actionData?.errors?.mobileNumber && (
+              <p className="text-red-500 mt-1 text-sm">
+                {actionData.errors.mobileNumber}
+              </p>
+            )}
           </div>
         </div>
 
@@ -124,6 +139,11 @@ const Contact = () => {
             placeholder="Your Message"
             maxLength={100}
           />
+          {actionData?.errors?.message && (
+            <p className="text-red-500 mt-1 text-sm">
+              {actionData.errors.message}
+            </p>
+          )}
         </div>
 
         {/* Submit button */}
@@ -156,8 +176,11 @@ export async function contactAction({ request }) {
     await apiClient.post("/contacts", contactData);
     return { success: true };
   } catch (error) {
+    if (error.response?.status === 400) {
+      return { success: false, errors: error.response?.data };
+    }
     throw new Response(
-      error?.response?.data?.errorMessage ||
+      error.response?.data?.errorMessage ||
         error.message ||
         "Failed to submit contact. Please try again",
       { status: error.status || 500 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.devithedev.eazystore.dto.ContactDto;
 import com.devithedev.eazystore.service.IContactService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,15 +21,9 @@ public class ContactController {
     private final IContactService iContactService;
 
     @PostMapping
-    public ResponseEntity<String> saveContact(@RequestBody ContactDto contactDto) {
-        boolean isSaved = this.iContactService.saveContact(contactDto);
-        if (isSaved) {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Request processed successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred. Please try again");
-        }
+    public ResponseEntity<String> saveContact(@Valid @RequestBody ContactDto contactDto) {
+        this.iContactService.saveContact(contactDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Request processed successfully");
     }
 
 }
