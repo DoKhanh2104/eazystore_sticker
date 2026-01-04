@@ -22,7 +22,7 @@ public class ProductServiceImpl implements IProductService {
         return this.productRepository.findAll().stream().map(this::transformToDTO).collect(Collectors.toList());
     }
 
-    private ProductDto transformToDTO(Product product){
+    private ProductDto transformToDTO(Product product) {
         ProductDto productDto = new ProductDto();
         BeanUtils.copyProperties(product, productDto);
         productDto.setProductId(product.getId());

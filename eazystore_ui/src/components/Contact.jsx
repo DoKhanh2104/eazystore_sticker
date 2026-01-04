@@ -157,7 +157,9 @@ export async function contactAction({ request }) {
     return { success: true };
   } catch (error) {
     throw new Response(
-      error.message || "Failed to submit contact. Please try again",
+      error?.response?.data?.errorMessage ||
+        error.message ||
+        "Failed to submit contact. Please try again",
       { status: error.status || 500 }
     );
   }

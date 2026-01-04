@@ -52,7 +52,7 @@ export default function Header() {
           <ul className="flex space-x-4">
             <li>
               <NavLink
-                to="/"
+                to="/home"
                 className={({ isActive }) =>
                   `text-center font-primary dark:text-light hover:text-dark dark:hover:text-lighter px-4 py-2 rounded-full transition-all duration-300 text-primary font-semibold  ${
                     isActive
