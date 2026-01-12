@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/contacts")
+@RequestMapping("/api/v1/contacts")
 public class ContactController {
 
     private final IContactService iContactService;
