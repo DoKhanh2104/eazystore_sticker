@@ -7,17 +7,19 @@ import {
   faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "@/store/cart-context";
 import { useAuth } from "@/store/auth-context";
+import { toast } from "react-toastify";
 
 export default function Header() {
   const navLinkClass =
     "text-center text-base font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
   const dropdownLinkClass =
     "block w-full text-left px-4 py-2 text-base font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const menuRef = useRef();
 
   const isAdmin = true;
@@ -60,6 +62,13 @@ export default function Header() {
       localStorage.setItem("theme", newTheme);
       return newTheme;
     });
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+    toast.success("Logged out successfully!");
+    navigate("/home");
   };
   return (
     <header className="border-b border-gray-300 dark:border-gray-600 sticky top-0 z-20 bg-normalbg dark:bg-darkbg">
@@ -129,7 +138,7 @@ export default function Header() {
                     onClick={toggleUserMenu}
                     className="relative text-primary"
                   >
-                    <span className={navLinkClass}>Hello John Doe</span>
+                    <span className={navLinkClass}>Hello! </span>
                     <FontAwesomeIcon
                       icon={faAngleDown}
                       className="text-primary dark:text-light w-6 h-6"
@@ -181,7 +190,11 @@ export default function Header() {
                         )}
 
                         <li>
-                          <Link className={dropdownLinkClass} to="/home">
+                          <Link
+                            onClick={handleLogout}
+                            className={dropdownLinkClass}
+                            to="/home"
+                          >
                             Logout
                           </Link>
                         </li>
@@ -224,5 +237,3 @@ export default function Header() {
     </header>
   );
 }
-
-// export default Header;

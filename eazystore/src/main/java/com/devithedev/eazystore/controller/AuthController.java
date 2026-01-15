@@ -1,14 +1,25 @@
 package com.devithedev.eazystore.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.password.CompromisedPasswordChecker;
+import org.springframework.security.authentication.password.CompromisedPasswordDecision;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devithedev.eazystore.dto.LoginRequestDto;
 import com.devithedev.eazystore.dto.LoginResponseDto;
+import com.devithedev.eazystore.dto.RegisterRequestDto;
 import com.devithedev.eazystore.dto.UserDto;
+import com.devithedev.eazystore.entity.Customer;
+import com.devithedev.eazystore.repository.CustomerRepository;
 import com.devithedev.eazystore.util.JwtUtil;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,7 +42,11 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final CustomerRepository customerRepository;
+    private final CompromisedPasswordChecker compromisedPasswordChecker;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> apiLogin(@RequestBody LoginRequestDto loginRequestDto) {
@@ -36,8 +55,8 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password()));
             String jwtToken = jwtUtil.generateJwtToken(authentication);
             var userDto = new UserDto();
-            var loginedUser = (User) authentication.getPrincipal();
-            userDto.setName(loginedUser.getUsername());
+            var loginedUser = (Customer) authentication.getPrincipal();
+            BeanUtils.copyProperties(loginedUser, userDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), userDto, jwtToken));
         } catch (BadCredentialsException ex) {
@@ -47,6 +66,33 @@ public class AuthController {
         } catch (Exception ex) {
             return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
         }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
+        CompromisedPasswordDecision decision = compromisedPasswordChecker.check(registerRequestDto.getPassword());
+        if (decision.isCompromised()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("password", "Choose a strong password"));
+        }
+        Optional<Customer> existingCustomer = this.customerRepository
+                .findByEmailOrMobileNumber(registerRequestDto.getEmail(), registerRequestDto.getMobileNumber());
+        if (existingCustomer.isPresent()) {
+            Map<String, String> errors = new HashMap<>();
+            Customer customer = existingCustomer.get();
+            if (customer.getEmail().equalsIgnoreCase(registerRequestDto.getEmail())) {
+                errors.put("email", "Email is already registed");
+            }
+
+            if (customer.getMobileNumber().equalsIgnoreCase(registerRequestDto.getMobileNumber())) {
+                errors.put("mobileNumber", "Mobile Number is already registed");
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(registerRequestDto, customer);
+        customer.setPasswordHash(passwordEncoder.encode(registerRequestDto.getPassword()));
+        this.customerRepository.save(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");
     }
 
     private ResponseEntity<LoginResponseDto> buildErrorResponse(HttpStatus status, String message) {
