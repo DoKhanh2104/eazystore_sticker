@@ -6,10 +6,10 @@ import {
   useNavigation,
 } from "react-router-dom";
 import PageTitle from "./PageTitle";
-import apiClient from "@/api/apiClient";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
-import { useAuth } from "@/store/auth-context";
+import { toast } from "sonner";
+import { useAuth } from "../store/auth-context";
+import apiClient from "../api/apiClient";
 
 const Login = () => {
   const actionData = useActionData();
@@ -23,7 +23,11 @@ const Login = () => {
     if (actionData?.success) {
       loginSuccess(actionData.jwtToken, actionData.user);
       sessionStorage.removeItem("redirectPath");
-      navigate(from);
+      setTimeout(() => {
+        navigate(from);
+      }, 100);
+
+      toast.success("Welcome you to Eazystore Stickers!");
     } else if (actionData?.errors) {
       toast.error(actionData.errors.message || "Login failed");
     }
@@ -126,7 +130,7 @@ export async function loginAction({ request }) {
       error.response?.data?.errorMessage ||
         error.message ||
         "Failed to login. Please try again",
-      { status: error.response?.status || 500 }
+      { status: error.response?.status || 500 },
     );
   }
 }

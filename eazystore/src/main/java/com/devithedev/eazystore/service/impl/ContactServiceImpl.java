@@ -20,15 +20,9 @@ public class ContactServiceImpl implements IContactService {
 
     @Override
     public boolean saveContact(ContactDto contactDto) {
-        try {
-            Contact contact = transformEntity(contactDto);
-            contact.setCreatedAt(Instant.now());
-            contact.setCreatedBy(contactDto.getName());
-            this.contactRepository.save(contact);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        Contact contact = transformEntity(contactDto);
+        this.contactRepository.save(contact);
+        return true;
 
     }
 

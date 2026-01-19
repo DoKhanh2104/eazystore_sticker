@@ -6,7 +6,7 @@ import {
   faShoppingBasket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useRef, useState } from "react";
-import { useCart } from "@/store/cart-context";
+import { useCart } from "../store/cart-context";
 
 const ProductDetail = () => {
   const location = useLocation();

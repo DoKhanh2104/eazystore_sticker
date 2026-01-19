@@ -8,7 +8,7 @@ import {
   useSubmit,
 } from "react-router-dom";
 import apiClient from "../api/apiClient";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import PageTitle from "./PageTitle";
 
 export default function Register() {

@@ -8,16 +8,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useCart } from "@/store/cart-context";
-import { useAuth } from "@/store/auth-context";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+import { useAuth } from "../store/auth-context";
+import { useCart } from "../store/cart-context";
 
 export default function Header() {
   const navLinkClass =
     "text-center text-base font-primary font-semibold text-primary py-2 dark:text-light hover:text-dark dark:hover:text-lighter";
   const dropdownLinkClass =
     "block w-full text-left px-4 py-2 text-base font-primary font-semibold text-primary dark:text-light hover:bg-gray-100 dark:hover:bg-gray-600";
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const menuRef = useRef();
@@ -138,7 +138,12 @@ export default function Header() {
                     onClick={toggleUserMenu}
                     className="relative text-primary"
                   >
-                    <span className={navLinkClass}>Hello! </span>
+                    <span className={navLinkClass}>
+                      Hello!{" "}
+                      {user.name.length > 5
+                        ? `${user.name.slice(0, 5)}...`
+                        : user.name}
+                    </span>
                     <FontAwesomeIcon
                       icon={faAngleDown}
                       className="text-primary dark:text-light w-6 h-6"

@@ -5,9 +5,9 @@ import {
   useSubmit,
 } from "react-router-dom";
 import PageTitle from "./PageTitle";
-import apiClient from "@/api/apiClient";
 import { useEffect, useRef } from "react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+import apiClient from "../api/apiClient";
 
 const Contact = () => {
   const actionData = useActionData();
@@ -183,7 +183,7 @@ export async function contactAction({ request }) {
       error.response?.data?.errorMessage ||
         error.message ||
         "Failed to submit contact. Please try again",
-      { status: error.status || 500 }
+      { status: error.status || 500 },
     );
   }
 }

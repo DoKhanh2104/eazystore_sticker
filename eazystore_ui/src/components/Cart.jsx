@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import PageTitle from "./PageTitle";
 import emptyCartImage from "../assets/util/emptycart.png";
 import { useMemo } from "react";
-import { useCart } from "@/store/cart-context";
+
 import CartTable from "./CartTable";
+import { useCart } from "../store/cart-context";
 
 const Cart = () => {
   const { cart } = useCart();

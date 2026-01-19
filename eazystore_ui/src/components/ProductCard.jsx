@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Price from "./Price";
-import { useCart } from "@/store/cart-context";
+import { useCart } from "../store/cart-context";
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
