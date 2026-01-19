@@ -43,13 +43,15 @@ public class EazyStoreSecurityConfig {
                 .authorizeHttpRequests(
                         (requests) -> {
                             publicPaths.forEach(path -> requests.requestMatchers(path).permitAll());
-                            requests.anyRequest().authenticated();
+                            requests.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
+                            requests.anyRequest().hasAnyRole("ADMIN", "USER");
                         })
                 .addFilterBefore(new JWTTokenValidatorFilter(publicPaths), BasicAuthenticationFilter.class)
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults()).build();
     }
 
+    // In memory
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         var user1 = User.builder().username("devi")

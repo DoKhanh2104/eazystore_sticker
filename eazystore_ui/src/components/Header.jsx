@@ -22,7 +22,8 @@ export default function Header() {
   const navigate = useNavigate();
   const menuRef = useRef();
 
-  const isAdmin = true;
+  const isAdmin = user?.roles?.includes("ROLE_ADMIN");
+
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
   const toggleUserMenu = () => {

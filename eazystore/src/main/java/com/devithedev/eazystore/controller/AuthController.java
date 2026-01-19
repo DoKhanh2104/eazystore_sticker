@@ -3,10 +3,11 @@ package com.devithedev.eazystore.controller;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,11 +16,9 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.authentication.password.CompromisedPasswordDecision;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-
-import org.springframework.security.core.userdetails.User;
-
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +29,7 @@ import com.devithedev.eazystore.dto.LoginResponseDto;
 import com.devithedev.eazystore.dto.RegisterRequestDto;
 import com.devithedev.eazystore.dto.UserDto;
 import com.devithedev.eazystore.entity.Customer;
+import com.devithedev.eazystore.entity.Role;
 import com.devithedev.eazystore.repository.CustomerRepository;
 import com.devithedev.eazystore.util.JwtUtil;
 
@@ -42,7 +42,6 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final CustomerRepository customerRepository;
@@ -57,6 +56,8 @@ public class AuthController {
             var userDto = new UserDto();
             var loginedUser = (Customer) authentication.getPrincipal();
             BeanUtils.copyProperties(loginedUser, userDto);
+            userDto.setRoles(authentication.getAuthorities().stream().map(
+                    GrantedAuthority::getAuthority).collect(Collectors.joining(",")));
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), userDto, jwtToken));
         } catch (BadCredentialsException ex) {
@@ -91,6 +92,9 @@ public class AuthController {
         Customer customer = new Customer();
         BeanUtils.copyProperties(registerRequestDto, customer);
         customer.setPasswordHash(passwordEncoder.encode(registerRequestDto.getPassword()));
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        customer.setRoles(Set.of(role));
         this.customerRepository.save(customer);
         return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");
     }
