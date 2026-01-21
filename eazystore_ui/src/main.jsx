@@ -25,7 +25,13 @@ import AdminOrders from "./components/admin/AdminOrders";
 import Messages from "./components/admin/Messages";
 import Register, { registerAction } from "./components/Register";
 import { Toaster } from "sonner";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import OrderSuccess from "./components/OrderSuccess";
 
+const stripePrimse = loadStripe(
+  "pk_test_51SrZQRGsvnUtzMHm1FhLTOrqGqlSEhDsvqHEjbyqkZH77wpIZSOSsCsZFo9BpxYTeDcZuspi0g9k9KKPIFxOGCSO00xYesAqX1",
+);
 const routeDefinitions = createRoutesFromElements(
   <Route path="/" element={<App />} errorElement={<ErrorPage />}>
     {/* PUBLIC ROUTE */}
@@ -41,6 +47,7 @@ const routeDefinitions = createRoutesFromElements(
     {/* PRIVATE ROUTE */}
     <Route element={<ProtectedRoute />}>
       <Route path="/checkout" element={<CheckoutForm />} />
+      <Route path="/order-success" element={<OrderSuccess />} />
       <Route
         path="/profile"
         element={<Profile />}
@@ -61,11 +68,13 @@ const appRouter = createBrowserRouter(routeDefinitions);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <CartProvider>
-        <RouterProvider router={appRouter} />
-      </CartProvider>
-    </AuthProvider>
-    <Toaster position="top-center" richColors />
+    <Elements stripe={stripePrimse}>
+      <AuthProvider>
+        <CartProvider>
+          <RouterProvider router={appRouter} />
+        </CartProvider>
+      </AuthProvider>
+      <Toaster position="bottom-right" richColors />
+    </Elements>
   </StrictMode>,
 );

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.devithedev.eazystore.dto.AddressDto;
 import com.devithedev.eazystore.dto.LoginRequestDto;
 import com.devithedev.eazystore.dto.LoginResponseDto;
 import com.devithedev.eazystore.dto.RegisterRequestDto;
@@ -58,6 +59,11 @@ public class AuthController {
             BeanUtils.copyProperties(loginedUser, userDto);
             userDto.setRoles(authentication.getAuthorities().stream().map(
                     GrantedAuthority::getAuthority).collect(Collectors.joining(",")));
+            if (loginedUser.getAddress() != null) {
+                AddressDto addressDto = new AddressDto();
+                BeanUtils.copyProperties(loginedUser.getAddress(), addressDto);
+                userDto.setAddress(addressDto);
+            }
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), userDto, jwtToken));
         } catch (BadCredentialsException ex) {
