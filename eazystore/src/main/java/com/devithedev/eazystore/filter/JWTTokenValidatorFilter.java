@@ -2,7 +2,6 @@ package com.devithedev.eazystore.filter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 
 import javax.crypto.SecretKey;

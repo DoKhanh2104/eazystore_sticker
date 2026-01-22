@@ -2,7 +2,7 @@ package com.devithedev.eazystore.util;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.stream.Collector;
+
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
@@ -23,24 +23,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    private final Environment env;
+        private final Environment env;
 
-    public String generateJwtToken(Authentication authentication) {
-        String jwt = "";
-        String secret = env.getProperty(ApplicationConstants.JWT_SECRET_KEY,
-                ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
-        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        Customer fetchedCustomer = (Customer) authentication.getPrincipal();
-        jwt = Jwts.builder().issuer("Devi").subject("JWT Token")
-                .claim("username", fetchedCustomer.getName())
-                .claim("email", fetchedCustomer.getEmail())
-                .claim("mobileNumber", fetchedCustomer.getMobileNumber())
-                .claim("roles",
-                        authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                                .collect(Collectors.joining(",")))
-                .issuedAt(new Date())
-                .expiration(new Date(new Date().getTime() + 60 * 60 * 1000))
-                .signWith(secretKey).compact();
-        return jwt;
-    }
+        public String generateJwtToken(Authentication authentication) {
+                String jwt = "";
+                String secret = env.getProperty(ApplicationConstants.JWT_SECRET_KEY,
+                                ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
+                SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+                Customer fetchedCustomer = (Customer) authentication.getPrincipal();
+                jwt = Jwts.builder().issuer("Devi").subject("JWT Token")
+                                .claim("username", fetchedCustomer.getName())
+                                .claim("email", fetchedCustomer.getEmail())
+                                .claim("mobileNumber", fetchedCustomer.getMobileNumber())
+                                .claim("roles",
+                                                authentication.getAuthorities().stream()
+                                                                .map(GrantedAuthority::getAuthority)
+                                                                .collect(Collectors.joining(",")))
+                                .issuedAt(new Date())
+                                .expiration(new Date(new Date().getTime() + 60 * 60 * 1000))
+                                .signWith(secretKey).compact();
+                return jwt;
+        }
 }
