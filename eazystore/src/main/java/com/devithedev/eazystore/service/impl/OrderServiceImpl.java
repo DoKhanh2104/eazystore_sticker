@@ -8,10 +8,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.devithedev.eazystore.constants.ApplicationConstants;
+import com.devithedev.eazystore.dto.ContactResponseDto;
 import com.devithedev.eazystore.dto.OrderItemResponseDto;
 import com.devithedev.eazystore.dto.OrderRequestDto;
 import com.devithedev.eazystore.dto.OrderResponseDto;
 import com.devithedev.eazystore.dto.ResponseDto;
+import com.devithedev.eazystore.entity.Contact;
 import com.devithedev.eazystore.entity.Customer;
 import com.devithedev.eazystore.entity.Order;
 import com.devithedev.eazystore.entity.OrderItem;

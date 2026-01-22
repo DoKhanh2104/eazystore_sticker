@@ -22,7 +22,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Profile, { profileAction, profileLoader } from "./components/Profile";
 import Orders, { ordersLoader } from "./components/Orders";
 import AdminOrders, { adminOrdersLoader } from "./components/admin/AdminOrders";
-import Messages from "./components/admin/Messages";
+import Messages, { messagesLoader } from "./components/admin/Messages";
 import Register, { registerAction } from "./components/Register";
 import { Toaster } from "sonner";
 import { loadStripe } from "@stripe/stripe-js";
@@ -63,7 +63,11 @@ const routeDefinitions = createRoutesFromElements(
         element={<AdminOrders />}
         loader={adminOrdersLoader}
       />
-      <Route path="/admin/messages" element={<Messages />} />
+      <Route
+        path="/admin/messages"
+        element={<Messages />}
+        loader={messagesLoader}
+      />
     </Route>
   </Route>,
 );
